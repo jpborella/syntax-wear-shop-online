@@ -7,7 +7,7 @@ export const Hero = () => {
             <section className='relative h-125 rounded-[20px] mb-10'>
                 <img src={Banner}
                     alt="Homem sentado com os tênis da SyntaxWear"
-                    className='w-full h-full object-cover rounded-[20px]' />+
+                    className='w-full h-full object-cover rounded-[20px]' />
 
                 <div className="absolute w-full bottom-0 flex justify-end items-center text-center px-6 md:px-24 pb-32">
                     <div className="flex flex-col items-center text-white w-[388px]">
