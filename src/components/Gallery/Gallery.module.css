@@ -1,99 +1,147 @@
+/* Este arquivo define os estilos da galeria de produtos.
+Utiliza CSS Grid para organizar as imagens em áreas específicas, com responsividade para mobile.
+Inclui estilos para cards de imagem, overlay ao passar o mouse, textos e botões personalizados. */
+
 .galleryGrid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: repeat(5, auto);
+    gap: 30px;
+    border-radius: 20px;
+    overflow: hidden;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(3, 300px);
     grid-template-areas:
-        "highlight highlight"
-        "sneaker-white sneaker-white"
-        "model sneaker-color"
-        "model sneaker-silver"
-        "sneaker-purple sneaker-purple";
-    gap: 20px;
+        "highlight highlight sneaker-purple sneaker-purple"
+        "highlight highlight model sneaker-color"
+        "sneaker-white sneaker-white model sneaker-silver";
 }
 
-.itemHighlight {
+/* Mobile */
+@media (max-width: 768px) {
+
+    /* Ajusta o grid para duas colunas e áreas diferentes em telas menores */
+    .galleryGrid {
+        gap: 10px;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: repeat(5, auto);
+        grid-template-areas:
+            "highlight highlight"
+            "sneaker-white sneaker-white"
+            "model sneaker-color"
+            "model sneaker-silver"
+            "sneaker-purple sneaker-purple";
+    }
+
+    /* Limita a altura dos cards de tênis branco e roxo no mobile */
+    .sneakerWhite,
+    .sneakerPurple {
+        max-height: 190px;
+    }
+}
+
+.highlight {
     grid-area: highlight;
-    position: relative;
 }
 
-.itemSneakerPurple {
+.sneakerPurple {
     grid-area: sneaker-purple;
 }
 
-.itemModel {
+.model {
     grid-area: model;
 }
 
-.itemSneakerColor {
+.sneakerColor {
     grid-area: sneaker-color;
 }
 
-.itemSneakerWhite {
+.sneakerWhite {
     grid-area: sneaker-white;
 }
 
-.itemSneakerSilver {
+.sneakerSilver {
     grid-area: sneaker-silver;
 }
 
-.image {
+.imageCard {
+    /* Card de imagem, com bordas arredondadas e overflow escondido */
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.imageCard img {
+    /* Imagem ocupa todo o espaço do card */
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 20px;
 }
 
 .overlay {
+    /* Overlay que aparece ao passar o mouse sobre o card */
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: white;
+    gap: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.imageCard:hover .overlay {
+    /* Exibe o overlay ao passar o mouse */
+    opacity: 1;
+}
+
+.textContent {
+    /* Estiliza o conteúdo de texto dentro do overlay */
     text-align: center;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 20px;
 }
 
-.overlay h3 {
-    font-size: 1.25rem;
+.productName {
+    /* Nome do produto no overlay */
+    color: #ededed;
+    font-family: Ubuntu, sans-serif;
     font-weight: 500;
-    margin-bottom: 0.5rem;
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    margin: 0;
 }
 
-.overlay h2 {
-    font-size: 1.875rem;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    max-width: 80%;
+.productDescription {
+    /* Descrição do produto no overlay */
+    color: #ededed;
+    font-family: Ubuntu, sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    letter-spacing: 0.08em;
+    margin: 0;
 }
 
 .buttonGroup {
+    /* Agrupa os botões no overlay */
     display: flex;
-    gap: 1rem;
+    gap: 10px;
 }
 
-@media (min-width: 768px) {
-    .galleryGrid {
-        grid-template-columns: repeat(4, 1fr);
-        grid-template-rows: repeat(3, 300px);
-        grid-template-areas:
-            "highlight highlight sneaker-purple sneaker-purple"
-            "highlight highlight model sneaker-color"
-            "sneaker-white sneaker-white model sneaker-silver";
-        gap: 30px;
-        padding: 0;
-    }
+.button {
+    /* Estiliza os botões do overlay */
+    padding: 10px 40px;
+    border: 2px solid white;
+    border-radius: 30px;
+    background: transparent;
+    color: white;
+    font-family: Ubuntu, sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
 
-    .overlay h3 {
-        font-size: 1.5rem;
-    }
-
-    .overlay h2 {
-        font-size: 2.5rem;
-    }
+.button:hover {
+    /* Efeito de hover nos botões */
+    background-color: white;
+    color: black;
 }
