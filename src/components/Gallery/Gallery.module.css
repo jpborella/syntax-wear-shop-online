@@ -1,7 +1,3 @@
-/* Este arquivo define os estilos da galeria de produtos.
-Utiliza CSS Grid para organizar as imagens em áreas específicas, com responsividade para mobile.
-Inclui estilos para cards de imagem, overlay ao passar o mouse, textos e botões personalizados. */
-
 .galleryGrid {
     display: grid;
     gap: 30px;
@@ -17,8 +13,6 @@ Inclui estilos para cards de imagem, overlay ao passar o mouse, textos e botões
 
 /* Mobile */
 @media (max-width: 768px) {
-
-    /* Ajusta o grid para duas colunas e áreas diferentes em telas menores */
     .galleryGrid {
         gap: 10px;
         grid-template-columns: 1fr 1fr;
@@ -31,7 +25,6 @@ Inclui estilos para cards de imagem, overlay ao passar o mouse, textos e botões
             "sneaker-purple sneaker-purple";
     }
 
-    /* Limita a altura dos cards de tênis branco e roxo no mobile */
     .sneakerWhite,
     .sneakerPurple {
         max-height: 190px;
@@ -63,21 +56,18 @@ Inclui estilos para cards de imagem, overlay ao passar o mouse, textos e botões
 }
 
 .imageCard {
-    /* Card de imagem, com bordas arredondadas e overflow escondido */
     position: relative;
     border-radius: 20px;
     overflow: hidden;
 }
 
 .imageCard img {
-    /* Imagem ocupa todo o espaço do card */
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
 .overlay {
-    /* Overlay que aparece ao passar o mouse sobre o card */
     position: absolute;
     inset: 0;
     background-color: rgba(0, 0, 0, 0.1);
@@ -91,17 +81,14 @@ Inclui estilos para cards de imagem, overlay ao passar o mouse, textos e botões
 }
 
 .imageCard:hover .overlay {
-    /* Exibe o overlay ao passar o mouse */
     opacity: 1;
 }
 
 .textContent {
-    /* Estiliza o conteúdo de texto dentro do overlay */
     text-align: center;
 }
 
 .productName {
-    /* Nome do produto no overlay */
     color: #ededed;
     font-family: Ubuntu, sans-serif;
     font-weight: 500;
@@ -111,7 +98,6 @@ Inclui estilos para cards de imagem, overlay ao passar o mouse, textos e botões
 }
 
 .productDescription {
-    /* Descrição do produto no overlay */
     color: #ededed;
     font-family: Ubuntu, sans-serif;
     font-weight: 500;
@@ -121,13 +107,11 @@ Inclui estilos para cards de imagem, overlay ao passar o mouse, textos e botões
 }
 
 .buttonGroup {
-    /* Agrupa os botões no overlay */
     display: flex;
     gap: 10px;
 }
 
 .button {
-    /* Estiliza os botões do overlay */
     padding: 10px 40px;
     border: 2px solid white;
     border-radius: 30px;
@@ -141,7 +125,6 @@ Inclui estilos para cards de imagem, overlay ao passar o mouse, textos e botões
 }
 
 .button:hover {
-    /* Efeito de hover nos botões */
     background-color: white;
     color: black;
 }
