@@ -38,10 +38,21 @@ const registerUserFormSchema = z.object({
             path: ['cpf'],
         }),
     dateBirth: z
-        .date(),
+        .string()
+        .nonempty('Campo obrigatório.')
+        .refine((value) => /^\d{4}-\d{2}-\d{2}$/.test(value), {
+            message: 'Data de nascimento inválida.',
+        }),
     cellphone: z
         .string()
-        .nonempty('Campo obrigatório.'),
+        .trim()
+        .nonempty('Campo obrigatório.')
+        .refine((value) => {
+            const digits = value.replace(/\D/g, '')
+            return digits.length >= 10 && digits.length <= 11
+        }, {
+            message: 'Informe um celular válido.',
+        }),
 }).refine(
     ({ password, confirmPassword }) => password === confirmPassword,
     {
