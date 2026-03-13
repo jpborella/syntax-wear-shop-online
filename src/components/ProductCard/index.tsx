@@ -1,12 +1,16 @@
 import { Link } from "@tanstack/react-router"
 import type { Product } from "../../interfaces/product"
 import { MdAddShoppingCart } from "react-icons/md"
+import { useContext } from "react"
 
 interface ProductCardProps {
     product: Product
 }
 
 export const ProductCard = ({ product }: ProductCardProps) => {
+
+    const { add } = useContext(CartContext);
+
     return (
         <div className="rounded-2xl shadow-md">
             <Link to="/products/$productId" params={{ productId: String(product.id) }}>
