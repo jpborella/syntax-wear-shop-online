@@ -34,11 +34,11 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         setCart(cart.filter((itemInCart) => itemInCart.id !== productId));
     }
 
-    function increment(product: ProductCart): void {
+    function incrementInCart(product: ProductCart): void {
         updateProductQuantity(product, product.quantity + 1);
     }
 
-    function decrement(product: ProductCart): void {
+    function decrementFromCart(product: ProductCart): void {
         updateProductQuantity(product, product.quantity - 1);
     }
 
@@ -63,8 +63,8 @@ export const CartProvider = ({ children }: CartProviderProps) => {
             cart,
             addToCart,
             removeFromCart,
-            increment,
-            decrement
+            incrementInCart,
+            decrementFromCart
         }}>
             {children}
         </CartContext.Provider>

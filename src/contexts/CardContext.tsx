@@ -6,8 +6,8 @@ export interface CartContextType {
     cart: ProductCart[];
     addToCart: (product: Product) => void;
     removeFromCart: (productId: number) => void;
-    increment: (product: ProductCart) => void;
-    decrement: (product: ProductCart) => void;
+    incrementInCart: (product: ProductCart) => void;
+    decrementFromCart: (product: ProductCart) => void;
 }
 
 export const CartContext = createContext({} as CartContextType);
