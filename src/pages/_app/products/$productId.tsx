@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { products } from "../../../mocks/products";
+import { productsInfo } from "../../../mocks/productsInfo";
 import { formatCurrency } from "../../../utils/format-currency";
 import { CartContext } from "../../../contexts/CardContext";
 import { useContext } from "react";
@@ -14,7 +14,7 @@ function RouteComponent() {
 
   const { productId } = Route.useParams();
 
-  const filteredProduct = products.find(
+  const filteredProduct = productsInfo.find(
     (product) => product.id === Number(productId)
   );
 

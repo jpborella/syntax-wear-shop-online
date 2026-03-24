@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { ProductList } from '../../../components/PeoductList'
-import { products } from '../../../mocks/products'
+import { productsInfo } from '../../../mocks/productsInfo'
 
 export const Route = createFileRoute('/_app/products/')({
     component: RouteComponent,
@@ -13,7 +13,7 @@ function RouteComponent() {
 
             <h2 className="text-center mb-10 p-4">Conforto expecional para suas aventuras do dia-a-dia</h2>
 
-            <ProductList products={products} />
+            <ProductList products={productsInfo} />
         </div>
     );
 }
