@@ -151,7 +151,7 @@ export const RegisterForm = () => {
             {/* Botão */}
             <button
                 disabled={isSubmitting}
-                className="bg-[#5433EB] text-white font-semibold uppercase rounded-md py-3 transition-all hover:bg-[#4028c7] disabled:opacity-50 cursor-pointer"
+                className="bg-[#5433EB] text-white font-medium uppercase rounded-md py-3 transition-all hover:bg-[#4028c7] disabled:opacity-50 cursor-pointer"
             >
                 {isSubmitting ? 'Carregando...' : 'Continuar'}
             </button>

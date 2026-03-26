@@ -11,7 +11,7 @@ export const Route = createFileRoute("/_auth/sign-up")({
 function RouteComponent() {
     return (
         <section className="min-h-screen w-full flex justify-center items-center bg-[#f5f5f5] p-5">
-            <div className="w-[450px] bg-white  rounded-2xl p-5 flex flex-col">
+            <div className="w-112.5 bg-white  rounded-2xl p-5 flex flex-col">
                 <Logo />
                 <RegisterForm />
                 <Separator />
