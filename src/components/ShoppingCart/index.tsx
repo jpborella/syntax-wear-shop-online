@@ -1,7 +1,7 @@
 import IconCart from "@/assets/images/icon-cart.png";
 import { useContext, useState } from "react";
 import { formatCurrency } from "../../utils/format-currency";
-import { CartContext } from "../../contexts/CardContext";
+import { CartContext } from "../../contexts/CartContext";
 
 export const ShoppingCart = () => {
     const [cartIsOpen, setCartIsOpen] = useState<boolean>(false);

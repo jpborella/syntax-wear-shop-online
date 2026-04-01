@@ -12,7 +12,7 @@ const socialLinks = [
 
 export const SocialLinks = () => {
     return (
-        <div className="flex flex-col gap-8 min-w-[344px]">
+        <div className="flex flex-col gap-8 min-w-86">
             <div>
                 <p>Redes Sociais</p>
                 <ul className="flex gap-5">

@@ -11,17 +11,21 @@ export interface NavLink {
 }
 
 const navLinks: NavLink[] = [
-  { name: "Masculino", href: "/products" },
-  { name: "Feminino", href: "/products" },
-  { name: "Outlet", href: "/products" },
+  { name: "Masculino", href: "/products/category/masculino" },
+  { name: "Feminino", href: "/products/category/feminino" },
+  { name: "Outlet", href: "/products/category/outlet" },
 ]
 
 export const Header = () => {
+  const handleLogoClick = () => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  };
+
   return (
     <div className="relative">
       <header className="fixed top-5 left-0 right-0 z-10 mx-10">
         <div className="bg-white text-black max-w-330 mx-auto flex justify-between items-center py-3 px-7 rounded-2xl mt-5">
-          <Link to="/">
+          <Link to="/" onClick={handleLogoClick}>
             <img src={Logo} alt="Logo SyntaxWear" className="w-32 md:w-36" />
           </Link>
 
