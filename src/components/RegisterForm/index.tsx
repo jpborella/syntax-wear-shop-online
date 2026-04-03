@@ -27,11 +27,11 @@ export const RegisterForm = () => {
                     {...register('email')}
                     className={`w-full border rounded-xs px-1  mt-1 focus:outline-none focus:ring-2 ${errors.email
                         ? 'border-red-500 focus:ring-red-400'
-                        : 'border-gray-300 focus:ring-[#5433EB]'
+                        : 'border-border focus:ring-accent'
                         }`}
                 />
                 {errors.email && (
-                    <p className="text-xs text-red-600 mt-1">⚠ {errors.email.message}</p>
+                    <p className="text-xs text-error mt-1">⚠ {errors.email.message}</p>
                 )}
             </div>
 
@@ -43,11 +43,11 @@ export const RegisterForm = () => {
                     {...register('password')}
                     className={`w-full border rounded-xs px-1  mt-1 focus:outline-none focus:ring-2 ${errors.password
                         ? 'border-red-500 focus:ring-red-400'
-                        : 'border-gray-300 focus:ring-[#5433EB]'
+                        : 'border-border focus:ring-accent'
                         }`}
                 />
                 {errors.password && (
-                    <p className="text-xs text-red-600 mt-1">⚠ {errors.password.message}</p>
+                    <p className="text-xs text-error mt-1">⚠ {errors.password.message}</p>
                 )}
             </div>
 
@@ -59,11 +59,11 @@ export const RegisterForm = () => {
                     {...register('confirmPassword')}
                     className={`w-full border rounded-xs px-1  mt-1 focus:outline-none focus:ring-2 ${errors.confirmPassword
                         ? 'border-red-500 focus:ring-red-400'
-                        : 'border-gray-300 focus:ring-[#5433EB]'
+                        : 'border-border focus:ring-accent'
                         }`}
                 />
                 {errors.confirmPassword && (
-                    <p className="text-xs text-red-600 mt-1">
+                    <p className="text-xs text-error mt-1">
                         ⚠ {errors.confirmPassword.message}
                     </p>
                 )}
@@ -75,10 +75,10 @@ export const RegisterForm = () => {
                 <input
                     type="text"
                     {...register('firstName')}
-                    className="w-full border border-gray-300 rounded-xs px-1  mt-1 focus:outline-none focus:ring-2 focus:ring-[#5433EB]"
+                    className="w-full border border-border rounded-xs px-1  mt-1 focus:outline-none focus:ring-2 focus:ring-accent"
                 />
                 {errors.firstName && (
-                    <p className="text-xs text-red-600 mt-1">⚠ {errors.firstName.message}</p>
+                    <p className="text-xs text-error mt-1">⚠ {errors.firstName.message}</p>
                 )}
             </div>
 
@@ -88,10 +88,10 @@ export const RegisterForm = () => {
                 <input
                     type="text"
                     {...register('lastName')}
-                    className="w-full border border-gray-300 rounded-xs px-1 mt-1 focus:outline-none focus:ring-2 focus:ring-[#5433EB]"
+                    className="w-full border border-border rounded-xs px-1 mt-1 focus:outline-none focus:ring-2 focus:ring-accent"
                 />
                 {errors.lastName && (
-                    <p className="text-xs text-red-600 mt-1">⚠ {errors.lastName.message}</p>
+                    <p className="text-xs text-error mt-1">⚠ {errors.lastName.message}</p>
                 )}
             </div>
 
@@ -107,10 +107,10 @@ export const RegisterForm = () => {
                         },
                     })}
                     placeholder="000.000.000-00"
-                    className="w-full border border-gray-300 rounded-xs px-1  mt-1 focus:outline-none focus:ring-2 focus:ring-[#5433EB]"
+                    className="w-full border border-border rounded-xs px-1  mt-1 focus:outline-none focus:ring-2 focus:ring-accent"
                 />
                 {errors.cpf && (
-                    <p className="text-xs text-red-600 mt-1">⚠ {errors.cpf.message}</p>
+                    <p className="text-xs text-error mt-1">⚠ {errors.cpf.message}</p>
                 )}
             </div>
 
@@ -120,10 +120,10 @@ export const RegisterForm = () => {
                 <input
                     type="date"
                     {...register('dateBirth')}
-                    className="w-full border border-gray-300 rounded-xs px-1 mt-1 focus:outline-none focus:ring-2 focus:ring-[#5433EB]"
+                    className="w-full border border-border rounded-xs px-1 mt-1 focus:outline-none focus:ring-2 focus:ring-accent"
                 />
                 {errors.dateBirth && (
-                    <p className="text-xs text-red-600 mt-1">
+                    <p className="text-xs text-error mt-1">
                         ⚠ {errors.dateBirth.message}
                     </p>
                 )}
@@ -141,17 +141,17 @@ export const RegisterForm = () => {
                         },
                     })}
                     placeholder="(00) 00000-0000"
-                    className="w-full border border-gray-300 rounded-xs px-1 mt-1 focus:outline-none focus:ring-2 focus:ring-[#5433EB]"
+                    className="w-full border border-border rounded-xs px-1 mt-1 focus:outline-none focus:ring-2 focus:ring-accent"
                 />
                 {errors.cellphone && (
-                    <p className="text-xs text-red-600 mt-1">⚠ {errors.cellphone.message}</p>
+                    <p className="text-xs text-error mt-1">⚠ {errors.cellphone.message}</p>
                 )}
             </div>
 
             {/* Botão */}
             <button
                 disabled={isSubmitting}
-                className="bg-[#5433EB] text-white font-medium uppercase rounded-md py-3 transition-all hover:bg-[#4028c7] disabled:opacity-50 cursor-pointer"
+                className="bg-accent text-white font-medium uppercase rounded-md py-3 transition-all hover:bg-accent-hover disabled:opacity-50 cursor-pointer"
             >
                 {isSubmitting ? 'Carregando...' : 'Continuar'}
             </button>
