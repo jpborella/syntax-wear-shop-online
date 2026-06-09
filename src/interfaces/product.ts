@@ -8,6 +8,6 @@ export interface Product {
     slug: string
     stock: number
     active: boolean
-    color: string
     description: string
+    color?: string
 }

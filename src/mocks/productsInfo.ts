@@ -13,91 +13,131 @@ export const products = [
     {
         id: 1,
         name: 'Mens tree dasher 2',
-        image: MensTreeDasher,
+        images: [MensTreeDasher],
         price: 135,
-        color: 'Natural Black/Royal blue',
+        colors: ['Natural Black/Royal blue'],
         description: 'Tênis de performance feito em tecido respirável de fibra de árvore, com ótimo amortecimento e suporte. Ideal para treinos e uso diário, oferecendo conforto e estilo moderno.',
-        category: { id: 1, name: "Masculino" }
+        categoryId: 1,
+        slug: 'mens-tree-dasher-2',
+        stock: 15,
+        active: true,
+        color: 'Natural Black/Royal blue'
     },
     {
         id: 2,
         name: 'Mens tree runner nz',
-        image: MensTreeRunnerNz,
+        images: [MensTreeRunnerNz],
         price: 110,
-        color: 'Weathered Brown',
+        colors: ['Weathered Brown'],
         description: 'Tênis leve e confortável produzido com tecido natural de eucalipto. Possui maciez no toque, respirabilidade e design versátil para acompanhar qualquer look casual.',
-        category: { id: 1, name: "Masculino" }
+        categoryId: 1,
+        slug: 'mens-tree-runner-nz',
+        stock: 12,
+        active: true,
+        color: 'Weathered Brown'
     },
     {
         id: 3,
         name: 'Mens wool cruiser',
-        image: MensWoolCruiser,
+        images: [MensWoolCruiser],
         price: 100,
-        color: 'Burgundy',
+        colors: ['Burgundy'],
         description: 'Sapato feito com lã merino macia que mantém os pés aquecidos e confortáveis. Estiloso, resistente e perfeito para dias frios sem abrir mão do visual moderno.',
-        category: { id: 1, name: "Masculino" }
+        categoryId: 1,
+        slug: 'mens-wool-cruiser',
+        stock: 20,
+        active: true,
+        color: 'Burgundy'
     },
     {
         id: 4,
         name: 'Mens wool cruiser slip on',
-        image: MensWoolCruiserSlipOn,
+        images: [MensWoolCruiserSlipOn],
         price: 95,
-        color: 'Dark Grey',
+        colors: ['Dark Grey'],
         description: 'Modelo slip-on em lã merino, fácil de calçar e extremamente confortável. Ideal para quem busca praticidade, estilo discreto e aquecimento natural.',
-        category: { id: 1, name: "Masculino" }
+        categoryId: 1,
+        slug: 'mens-wool-cruiser-slip-on',
+        stock: 18,
+        active: true,
+        color: 'Dark Grey'
     },
     {
         id: 5,
         name: 'Mens wool cruiser waterproof',
-        image: MensWoolCruiserWaterproof,
+        images: [MensWoolCruiserWaterproof],
         price: 140,
-        color: 'Natural Black',
+        colors: ['Natural Black'],
         description: 'Versão impermeável do Wool Cruiser, feita com lã merino tratada. Mantém os pés secos e aquecidos mesmo em dias chuvosos, sem perder o conforto e o estilo.',
-        category: { id: 1, name: "Masculino" }
+        categoryId: 1,
+        slug: 'mens-wool-cruiser-waterproof',
+        stock: 10,
+        active: true,
+        color: 'Natural Black'
     },
     {
         id: 6,
         name: 'Mens wool runner nz waterproof',
-        image: MensWoolRunnerNzWaterproof,
+        images: [MensWoolRunnerNzWaterproof],
         price: 150,
-        color: 'Medium Grey',
+        colors: ['Medium Grey'],
         description: 'Tênis resistente à água, feito em lã merino com ajuste confortável e respirável. Perfeito para quem busca proteção e estilo em qualquer clima.',
-        category: { id: 5, name: "Moderno" }
+        categoryId: 5,
+        slug: 'mens-wool-runner-nz-waterproof',
+        stock: 8,
+        active: true,
+        color: 'Medium Grey'
     },
     {
         id: 7,
         name: 'Mens wool runner nz mid waterproof',
-        image: MensWoolRunnerNzMidWaterproof,
+        images: [MensWoolRunnerNzMidWaterproof],
         price: 160,
-        color: 'Natural Black',
+        colors: ['Natural Black'],
         description: 'Modelo de cano médio em lã merino, impermeável e elegante. Oferece estabilidade extra, conforto térmico e proteção ideal para dias frios e úmidos.',
-        category: { id: 5, name: "Moderno" }
+        categoryId: 5,
+        slug: 'mens-wool-runner-nz-mid-waterproof',
+        stock: 6,
+        active: true,
+        color: 'Natural Black'
     },
     {
         id: 8,
         name: 'Mens strider explore',
-        image: MensStriderExplore,
+        images: [MensStriderExplore],
         price: 130,
-        color: 'Rustic Green',
+        colors: ['Rustic Green'],
         description: 'Tênis robusto e moderno, feito para aventuras urbanas e ao ar livre. Combina resistência, conforto e design em um só produto versátil.',
-        category: { id: 5, name: "Moderno" }
+        categoryId: 5,
+        slug: 'mens-strider-explore',
+        stock: 14,
+        active: true,
+        color: 'Rustic Green'
     },
     {
         id: 9,
         name: 'Mens cruiser mid explore',
-        image: MensCruiserMidExplore,
+        images: [MensCruiserMidExplore],
         price: 140,
-        color: 'Rustic Green',
+        colors: ['Rustic Green'],
         description: 'Sapato de cano médio com acabamento resistente e estilo aventureiro. Proporciona conforto prolongado e segurança em diferentes tipos de terreno.',
-        category: { id: 3, name: "Outlet" }
+        categoryId: 3,
+        slug: 'mens-cruiser-mid-explore',
+        stock: 9,
+        active: true,
+        color: 'Rustic Green'
     },
     {
         id: 10,
         name: 'Mens cruiser',
-        image: MensCruiser,
+        images: [MensCruiser],
         price: 100,
-        color: 'Blizzard',
+        colors: ['Blizzard'],
         description: 'Clássico e elegante, o Cruiser é feito em materiais premium que garantem conforto e durabilidade. Uma escolha versátil para qualquer ocasião.',
-        category: { id: 3, name: "Outlet" }
+        categoryId: 3,
+        slug: 'mens-cruiser',
+        stock: 22,
+        active: true,
+        color: 'Blizzard'
     },
 ]

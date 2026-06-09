@@ -58,17 +58,17 @@ function RouteComponent() {
         <span className="font-semibold">{filteredProduct?.name}</span>
       </nav>
 
-      <div className="flex justify-center gap-10">
+      <div className="flex flex-col md:flex-row justify-center gap-10">
         <img
-          src={filteredProduct?.image}
+          src={filteredProduct?.images?.[0]}
           alt={filteredProduct?.name}
-          className="w-125 bg-white rounded-2xl"
+          className="w-full md:w-125 bg-white rounded-2xl object-cover"
         />
 
-        <div className="text-black">
+        <div className="text-black flex-1">
           <h1 className="text-4xl font-bold mb-1">{filteredProduct?.name}</h1>
 
-          <p className="mb-2">Cor: {filteredProduct?.color}</p>
+          <p className="mb-2">Cor: {filteredProduct?.colors?.[0] || filteredProduct?.color || "Não especificada"}</p>
 
           <p className="line-through text-sm text-[#878787]">
             {formatCurrency(originalPrice)}

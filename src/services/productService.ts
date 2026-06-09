@@ -15,6 +15,24 @@ interface ProductResponse {
     limit: number;
 }
 
+/**
+ * Normalizes product data from the API.
+ * The API might return images and colors as strings instead of arrays.
+ */
+function normalizeProduct(product: any): Product {
+    return {
+        ...product,
+        // Ensure images is an array
+        images: Array.isArray(product.images) 
+            ? product.images 
+            : (typeof product.images === 'string' && product.images.trim() !== '' ? [product.images] : []),
+        // Ensure colors is an array (splitting by space if it's a string)
+        colors: Array.isArray(product.colors)
+            ? product.colors
+            : (typeof product.colors === 'string' && product.colors.trim() !== '' ? product.colors.split(' ') : [])
+    };
+}
+
 export async function getProducts({ page, limit = DEFAULT_LIMIT }: GetProductParams): Promise<ProductResponse> {
     const params = new URLSearchParams({
         page: page.toString(),
@@ -28,7 +46,12 @@ export async function getProducts({ page, limit = DEFAULT_LIMIT }: GetProductPar
 
         if (!response.ok) throw new Error(`Erro ao buscar produtos: ${response.statusText}`);
 
-        return await response.json();
+        const result = await response.json();
+        
+        return {
+            ...result,
+            data: result.data.map(normalizeProduct)
+        };
     } catch (error) {
         if (error instanceof Error) throw error;
 
@@ -48,5 +71,10 @@ export async function getProductByCategoryId(categoryId: number, paginationParam
         throw new Error(`Erro ao buscar produtos por categoria: ${response.statusText}`);
     }
 
-    return await response.json();
+    const result = await response.json();
+    
+    return {
+        ...result,
+        data: result.data.map(normalizeProduct)
+    };
 }

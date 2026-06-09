@@ -7,7 +7,7 @@ interface ProductListProps {
 
 export const ProductList = ({ products } : ProductListProps) => {
     return (
-        <section className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(350px,1fr))] xl:grid-cols-3 mb-10">
+        <section className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(min(350px,100%),1fr))] xl:grid-cols-3 mb-10 w-full">
             {products.map(product => (
                 <ProductCard key={product.id} product={product}/>
             ))}

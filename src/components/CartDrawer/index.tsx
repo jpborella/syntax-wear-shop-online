@@ -46,9 +46,9 @@ export const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
 
                 <div className="flex gap-4">
                   <img
-                    src={product.image}
+                    src={product.images && product.images.length > 0 ? product.images[0] : ""}
                     alt={product.name}
-                    className="w-24 h-24 md:w-32 md:h-32"
+                    className="w-24 h-24 md:w-32 md:h-32 object-cover"
                   />
 
                   <div className="flex flex-col items-start">

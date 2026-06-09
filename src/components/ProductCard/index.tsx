@@ -14,19 +14,21 @@ export const ProductCard = ({ product }: ProductCardProps) => {
     const { addToCart } = useContext(CartContext);
 
     return (
-        <div className="rounded-2xl shadow-md">
+        <div className="rounded-2xl shadow-md bg-white">
             <Link to="/products/$productId" params={{ productId: String(product.id) }}>
                 {product.images && Array.isArray(product.images) && product.images.length > 0 ? (
-                    <img className="w-full max-h-100 object-cover rounded-md mb-2" src={product.images[0]} alt={product.name} />
+                    <img className="w-full max-h-[400px] object-cover rounded-t-2xl mb-2" src={product.images[0]} alt={product.name} />
                 ) : (
-                    <div className="w-full max-h-100 bg-gray-300 rounded-md mb-2" />
+                    <div className="w-full h-[400px] bg-gray-200 rounded-t-2xl mb-2 flex items-center justify-center text-gray-400">Sem imagem</div>
                 )}
             </Link>
 
-            <div className="text-black rounded-2xl p-4">
-                <h3 className="text-lg font-semibold">{product.name}</h3>
+            <div className="text-black p-4 pt-0">
+                <Link to="/products/$productId" params={{ productId: String(product.id) }} className="hover:underline">
+                    <h3 className="text-lg font-semibold truncate">{product.name}</h3>
+                </Link>
 
-                <p>{product.colors && product.colors.length > 0 ? product.colors[0] : "Sem cor"}</p>
+                <p className="text-sm text-gray-500">{product.colors && product.colors.length > 0 ? product.colors[0] : (product.color || "Sem cor")}</p>
 
                 <div className="flex justify-between mt-2.5">
                     <p className="font-bold">{formatCurrency(product.price)}</p>

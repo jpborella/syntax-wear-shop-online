@@ -1,8 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ProductList } from "../../../../components/ProductList";
 import { products } from "../../../../mocks/productsInfo";
+import { getCategoryByName } from "../../../../services/categoryService";
 
 export const Route = createFileRoute("/_app/products/category/$category")({
+    loader: async ({ params }) => {
+        const category = await getCategoryByName(params.category);
+        return { category };
+    },
     component: RouteComponent,
     head: () => ({
         meta: [
@@ -13,9 +18,9 @@ export const Route = createFileRoute("/_app/products/category/$category")({
 
 function RouteComponent() {
 
-    const { category } = Route.useParams();
+    const { category: categoryData } = Route.useLoaderData();
 
-    const filteredProducts = products.filter(product => (product.category?.name ?? "").toLowerCase() === category.toLowerCase());
+    const filteredProducts = products.filter(product => product.categoryId === categoryData?.id);
 
     return (
         <section className="container pt-44 md:pt-54 pb-10 md:px-10 mb-10 text-black min-h-[80vh] flex flex-col items-center justify-center">
