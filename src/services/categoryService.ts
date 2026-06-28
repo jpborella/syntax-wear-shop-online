@@ -13,9 +13,9 @@ export async function getCategoryByName(name: string) {
 
     const result = await response.json();
 
-    if (!result.data || result.data.length === 0) {
+    if (!Array.isArray(result) || result.length === 0) {
         throw notFound();
     }
 
-    return result.data[0];
+    return result[0];
 }
