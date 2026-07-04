@@ -1,6 +1,7 @@
 import { RouterProvider, createRouter } from "@tanstack/react-router"
 import { routeTree } from "./router-tree-gen"
 import { CartProvider } from "./contexts/CartContext/CartProvider";
+import { AuthProvider } from "./contexts/AuthContext/AuthProvider";
 
 // Cria a instância principal do roteador usando a árvore de rotas gerada automaticamente.
 const router = createRouter({ routeTree });
@@ -18,9 +19,11 @@ function App() {
   // Injeta o roteador na aplicação React; a partir daqui as rotas passam a controlar
   // qual página/componente será renderizada de acordo com a URL atual.
   return (
-    <CartProvider>
-      <RouterProvider router={router} />
-    </CartProvider>
+    <AuthProvider>
+      <CartProvider>
+        <RouterProvider router={router} />
+      </CartProvider>
+    </AuthProvider>
   );
 
 }
