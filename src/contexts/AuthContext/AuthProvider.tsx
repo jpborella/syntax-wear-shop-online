@@ -11,7 +11,7 @@ const apiUrl = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
 export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+    const [, setIsAuthenticated] = useState<boolean>(false);
 
     const signIn = useCallback(async (credentials: Credentials): Promise<void> => {
         const response = await fetch(`${apiUrl}/auth/login`, {
