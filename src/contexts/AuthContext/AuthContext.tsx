@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { createContext, useContext } from "react";
 
 export interface Credentials {
     email: string;
@@ -18,6 +18,11 @@ export interface AuthContextType {
     isLoading: boolean;
     signIn: (credentials: Credentials) => Promise<void>;
     signOut: () => Promise<void>;
+    signInWithGoogle: (credential: string) => Promise<void>;
 }
 
 export const AuthContext = createContext({} as AuthContextType);
+
+export function useAuth() {
+	return useContext(AuthContext);
+}

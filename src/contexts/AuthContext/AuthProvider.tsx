@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { AuthContext, type Credentials, type User } from "./AuthContext";
 
-
 interface AuthProviderProps {
     children: React.ReactNode;
 }
@@ -44,40 +43,62 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setIsAuthenticated(false);
     }, []);
 
-    useEffect(() => {
-        async function loadUser() {
-            try {
-                const response = await fetch(`${apiUrl}/auth/me`, {
-                    method: "GET",
-                    credentials: "include",
-                });
+    async function signInWithGoogle(credential: string): Promise<void> {
+        const response = await fetch(`${apiUrl}/auth/google-login`, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ credential }),
+        });
 
-                if (!response.ok) {
-                    setUser(null);
-                    return;
-                }
+        const result = await response.json();
 
-                const responseBody = await response.json();
-                setUser(responseBody.user);
-                setIsAuthenticated(true);
-            } catch {
-                setUser(null);
-                setIsAuthenticated(false);
-            } finally {
-                setIsLoading(false);
-            }
+        if (!response.ok || !result?.user) {
+            throw new Error(result?.message || "Erro ao autenticar com Google");
         }
 
-        loadUser();
-    }, []);
+        setUser(result.user);
+        setIsAuthenticated(true);
+    }
 
-    const value = {
-        user,
-        isAuthenticated: Boolean(user),
-        isLoading,
-        signIn,
-        signOut,
-    };
 
-    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+useEffect(() => {
+    async function loadUser() {
+        try {
+            const response = await fetch(`${apiUrl}/auth/me`, {
+                method: "GET",
+                credentials: "include",
+            });
+
+            if (!response.ok) {
+                setUser(null);
+                return;
+            }
+
+            const responseBody = await response.json();
+            setUser(responseBody.user);
+            setIsAuthenticated(true);
+        } catch {
+            setUser(null);
+            setIsAuthenticated(false);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    loadUser();
+}, []);
+
+const value = {
+    user,
+    isAuthenticated: Boolean(user),
+    isLoading,
+    signIn,
+    signOut,
+    signInWithGoogle
+};
+
+return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
