@@ -62,9 +62,39 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setIsAuthenticated(true);
     }
 
-    async function register(data: RegisterInput): Promise<void> {}
+    async function register(data: RegisterInput): Promise<void> {
+        const response = await fetch("http://localhost:3000/auth/register", {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
 
-    async function signOut(): Promise<void> {}
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.message || "Erro ao registrar usuário");
+        }
+
+        setUser(result.user);
+        setIsAuthenticated(true);
+    }
+
+    async function signOut(): Promise<void> {
+        try {
+            await fetch("http://localhost:3000/auth/signout", {
+                method: "POST",
+                credentials: "include", // faz com que os cookies sejam enviados junto com a requisição
+            })
+
+            setUser(null);
+            setIsAuthenticated(false);
+        } catch (error) {
+            console.error("Erro ao fazer logout:", error);
+        }
+    }
 
     async function signInWithGoogle(credential: string): Promise<void> {
         const response = await fetch("http://localhost:3000/auth/google", {

@@ -5,6 +5,8 @@ import { MenuMobile } from "../MenuMobile";
 import { CartButton } from "../CartButton";
 import { CartDrawer } from "../CartDrawer";
 import { useState } from "react";
+import { useAuth } from "../../contexts/AuthContext/AuthContext";
+import { PiSignOutLight } from "react-icons/pi";
 
 export interface NavLink {
   name: string;
@@ -20,6 +22,12 @@ const navLinks: NavLink[] = [
 export const Header = () => {
 
   const [cartIsOpen, setCartIsOpen] = useState<boolean>(false);
+
+  const { isAuthenticated, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
 
   return (
     <div className="relative">
@@ -44,17 +52,29 @@ export const Header = () => {
               <li className="hidden lg:block">
                 <Link to="/our-stores">Nossas lojas</Link>
               </li>
+
               <li className="hidden lg:block">
                 <Link to="/about">Sobre</Link>
               </li>
+
               <li className="lg:hidden">
                 <MenuMobile navLinks={navLinks} />
               </li>
+
               <li className="hidden lg:block">
-                <Link to="/sign-in">
-                  <img src={IconUser} alt="Ícone de login" />
-                </Link>
+                {isAuthenticated ? (
+                  <button onClick={handleSignOut} className="cursor-pointer hover:opacity-70 transition-opacity flex items-center gap-2">
+                    Sair
+                    <PiSignOutLight className="w-6 h-6"></PiSignOutLight>
+                  </button>
+                ) : (
+                  <Link to="/sign-in">
+                    <img src={IconUser} alt="Ícone de login" />
+                  </Link>
+                )
+                }
               </li>
+
               <li>
                 <CartButton onClick={() => setCartIsOpen(true)} />
               </li>
