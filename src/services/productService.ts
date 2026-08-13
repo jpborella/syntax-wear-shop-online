@@ -6,6 +6,8 @@ const DEFAULT_LIMIT = 3;
 interface GetProductParams {
     page: number;
     limit?: number;
+    gender?: string;
+    isOutlet?: boolean;
 }
 
 interface ProductResponse {
@@ -15,11 +17,14 @@ interface ProductResponse {
     limit: number;
 }
 
-export async function getProducts({ page, limit = DEFAULT_LIMIT }: GetProductParams): Promise<ProductResponse> {
+export async function getProducts({ page, limit = DEFAULT_LIMIT, gender, isOutlet }: GetProductParams): Promise<ProductResponse> {
     const params = new URLSearchParams({
         page: page.toString(),
         limit: limit.toString()
     });
+
+    if (gender) params.append('gender', gender);
+    if (isOutlet !== undefined) params.append('isOutlet', isOutlet.toString());
 
     const url = `${API_BASE_URL}/products?${params.toString()}`;
 
@@ -42,6 +47,10 @@ export async function getProductByCategoryId(categoryId: number, paginationParam
         limit: (paginationParams?.limit || DEFAULT_LIMIT).toString(),
         categoryId: categoryId.toString()
     });
+    
+    if (paginationParams?.gender) params.append('gender', paginationParams.gender);
+    if (paginationParams?.isOutlet !== undefined) params.append('isOutlet', paginationParams.isOutlet.toString());
+
     const response = await fetch(`${API_BASE_URL}/products?${params.toString()}`);
 
     if (!response.ok) {
@@ -49,4 +58,14 @@ export async function getProductByCategoryId(categoryId: number, paginationParam
     }
 
     return await response.json();
+}
+
+export async function getProductBySection(section: string, paginationParams?: GetProductParams): Promise<ProductResponse> {
+    const params: GetProductParams = { ...paginationParams, page: paginationParams?.page || 1 };
+    
+    if (section.toLowerCase() === 'masculino') params.gender = 'MASCULINO';
+    else if (section.toLowerCase() === 'feminino') params.gender = 'FEMININO';
+    else if (section.toLowerCase() === 'outlet') params.isOutlet = true;
+
+    return getProducts(params);
 }

@@ -15,6 +15,23 @@ export const RegisterForm = () => {
   async function handleRegisterUser(data: RegisterFormData) {
     const { confirmPassword, ...dataWithoutConfirmPassword } = data;
 
+    // Sanitiza e formata os dados para a API
+    if (dataWithoutConfirmPassword.cpf) {
+      dataWithoutConfirmPassword.cpf = dataWithoutConfirmPassword.cpf.replace(/\D/g, "");
+    }
+
+    if (dataWithoutConfirmPassword.phone) {
+      dataWithoutConfirmPassword.phone = dataWithoutConfirmPassword.phone.replace(/\D/g, "");
+    }
+
+    if (dataWithoutConfirmPassword.birthDate) {
+      // O input do tipo date retorna YYYY-MM-DD, mas a API espera DD/MM/AAAA
+      const [year, month, day] = dataWithoutConfirmPassword.birthDate.split("-");
+      if (year && month && day) {
+        dataWithoutConfirmPassword.birthDate = `${day}/${month}/${year}`;
+      }
+    }
+
     setError(null);
 
     try {
