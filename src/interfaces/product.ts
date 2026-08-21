@@ -10,4 +10,6 @@ export interface Product {
     active: boolean
     description: string
     color?: string
+    gender?: 'MASCULINO' | 'FEMININO' | 'UNISSEX'
+    isOutlet?: boolean
 }

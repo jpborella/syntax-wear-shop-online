@@ -38,11 +38,13 @@ function RouteComponent() {
 
     const hasFetchedInitialProducts = useRef<string | null>(null);
     const searchGenderRef = useRef<string | null>(null);
+    const fetchKeyRef = useRef<string | null>(null);
+    const isLoadingRef = useRef(false);
 
     useEffect(() => {
-        if (hasFetchedInitialProducts.current === routeCategory && searchGenderRef.current === search.gender) return;
-        hasFetchedInitialProducts.current = routeCategory;
-        searchGenderRef.current = search.gender || null;
+        const key = `${routeCategory ?? ''}|${search.gender ?? ''}|${section ?? ''}`;
+        if (fetchKeyRef.current === key) return;
+        fetchKeyRef.current = key;
 
         setProducts([]);
         setPage(1);
@@ -51,8 +53,9 @@ function RouteComponent() {
     }, [routeCategory, category, section, notFound, search.gender]);
 
     async function loadMore(pageToLoad?: number) {
-        if (loading || !hasMore || notFound) return;
+        if (isLoadingRef.current || !hasMore || notFound) return;
 
+        isLoadingRef.current = true;
         setLoading(true);
         const currentPage = pageToLoad ?? page;
 
@@ -68,7 +71,17 @@ function RouteComponent() {
                 return;
             }
 
-            setProducts((prev) => [...prev, ...filteredProducts.data]);
+            setProducts((prev) => {
+                const combined = [...prev, ...filteredProducts.data];
+
+                // Unificar por id para evitar duplicados
+                const map = new Map<number, typeof combined[0]>();
+                for (const p of combined) {
+                    map.set(p.id, p);
+                }
+
+                return Array.from(map.values());
+            });
 
             if (filteredProducts.data.length < filteredProducts.limit) {
                 setHasMore(false);
@@ -79,6 +92,7 @@ function RouteComponent() {
             console.error("Erro ao carregar produtos:", error);
             setHasMore(false);
         } finally {
+            isLoadingRef.current = false;
             setLoading(false);
         }
     }

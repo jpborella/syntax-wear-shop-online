@@ -27,7 +27,24 @@ function RouteComponent() {
         try {
             const response = await getProducts({ page });
 
-            setProducts((prev) => [...prev, ...response.data]);
+            setProducts((prev) => {
+                const combined = [...prev, ...response.data];
+
+                // Unificar por id (mantém última ocorrência) e ordenar produtos com imagens primeiro
+                const map = new Map<number, typeof combined[0]>();
+                for (const p of combined) {
+                    map.set(p.id, p);
+                }
+
+                const unique = Array.from(map.values());
+                unique.sort((a, b) => {
+                    const aHas = a.images && a.images.length > 0 ? 1 : 0;
+                    const bHas = b.images && b.images.length > 0 ? 1 : 0;
+                    return bHas - aHas; // produtos com imagem primeiro
+                });
+
+                return unique;
+            });
 
             if (response.data.length < response.limit) {
                 setHasMore(false);

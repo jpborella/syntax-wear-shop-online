@@ -1,6 +1,7 @@
 import type { Product } from "../interfaces/product";
 
 const API_BASE_URL = "http://localhost:3000";
+// Limite padrão compatível com a API (máximo 50)
 const DEFAULT_LIMIT = 3;
 
 interface GetProductParams {
@@ -68,4 +69,14 @@ export async function getProductBySection(section: string, paginationParams?: Ge
     else if (section.toLowerCase() === 'outlet') params.isOutlet = true;
 
     return getProducts(params);
+}
+
+export async function getProductById(id: number): Promise<Product> {
+    const response = await fetch(`${API_BASE_URL}/products/${id}`);
+
+    if (!response.ok) {
+        throw new Error(`Erro ao buscar produto: ${response.statusText}`);
+    }
+
+    return await response.json();
 }
