@@ -17,32 +17,34 @@ function RouteComponent() {
   const { productId } = Route.useParams();
 
   const [product, setProduct] = useState<Product | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loadedProductId, setLoadedProductId] = useState<string | null>(null);
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
     let mounted = true;
-    setLoading(true);
-    setNotFound(false);
 
     const id = Number(productId);
     getProductById(id)
       .then((p) => {
         if (!mounted) return;
         setProduct(p as Product);
+        setNotFound(false);
+        setLoadedProductId(productId);
         document.title = `${p.name} - Produtos - SyntaxWear`;
       })
       .catch((err) => {
         console.error('Erro ao buscar produto:', err);
         if (!mounted) return;
         setNotFound(true);
+        setLoadedProductId(productId);
       })
-      .finally(() => mounted && setLoading(false));
 
     return () => {
       mounted = false;
     };
   }, [productId]);
+
+  const loading = loadedProductId !== productId;
 
   if (loading)
     return (
@@ -51,7 +53,7 @@ function RouteComponent() {
       </section>
     );
 
-  if (notFound || !product)
+  if (loadedProductId === productId && (notFound || !product))
     return (
       <section className="container mb-10 pt-44 md:pt-54 pb-10 md:px-10 text-center text-black min-h-[80vh] flex flex-col items-center justify-center">
         <h1 className="text-3xl font-bold mb-4">Produto não encontrado</h1>
@@ -101,7 +103,9 @@ function RouteComponent() {
 
           <button
             className="bg-black text-white rounded-md p-5 w-full cursor-pointer hover:bg-gray-800"
-            onClick={() => addToCart(product)}
+            onClick={() => {
+              if (product) addToCart(product);
+            }}
           >
             Adicionar ao carrinho
           </button>
