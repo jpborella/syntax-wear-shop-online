@@ -43,6 +43,10 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         setCart(cart.filter((itemInCart) => itemInCart.id !== productId));
     }
 
+    function clearCart(): void {
+        setCart([]);
+    }
+
     function incrementInCart(product: ProductCart): void {
         updateProductQuantity(product, product.quantity + 1);
     }
@@ -72,6 +76,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
             cart,
             addToCart,
             removeFromCart,
+            clearCart,
             incrementInCart,
             decrementFromCart
         }}>

@@ -78,7 +78,7 @@ export const Route = createFileRoute("/checkout/")({
 
 function CheckoutPage() {
 	const navigate = useNavigate();
-	const { cart, removeFromCart } = useContext(CartContext);
+	const { cart, clearCart } = useContext(CartContext);
 	const { isAuthenticated, updatePhone, user } = useAuth();
 	const [addressMessage, setAddressMessage] = useState<string | null>(null);
 	const [isLoadingAddress, setIsLoadingAddress] = useState(false);
@@ -223,7 +223,7 @@ function CheckoutPage() {
 				throw new Error(responseBody?.message ?? "Não foi possível finalizar o pedido.");
 			}
 
-			cart.forEach((item) => removeFromCart(item.id));
+			clearCart();
 			setIsCompleted(true);
 		} catch (error) {
 			setSubmitError(error instanceof Error ? error.message : "Não foi possível finalizar o pedido.");

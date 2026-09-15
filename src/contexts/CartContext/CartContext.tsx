@@ -6,6 +6,7 @@ export interface CartContextType {
     cart: ProductCart[];
     addToCart: (product: Product) => void;
     removeFromCart: (productId: number) => void;
+    clearCart: () => void;
     incrementInCart: (product: ProductCart) => void;
     decrementFromCart: (product: ProductCart) => void;
 }
