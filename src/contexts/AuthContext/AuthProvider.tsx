@@ -118,13 +118,32 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setIsAuthenticated(true);
     }
 
+    async function updatePhone(phone: string): Promise<void> {
+        const response = await fetch("http://localhost:3000/auth/profile", {
+            method: "PATCH",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ phone }),
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.message || "Não foi possível atualizar o telefone.");
+        }
+
+        setUser((currentUser) => currentUser ? { ...currentUser, phone: data.phone ?? phone } : currentUser);
+    }
+
     const value = {
         user,
         isAuthenticated,
         signIn,
         signUp,
         signOut,
-        signInWithGoogle
+        signInWithGoogle,
+        updatePhone,
     };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

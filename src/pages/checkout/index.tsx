@@ -1,15 +1,24 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useContext, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FiAlertCircle, FiCheck } from "react-icons/fi";
 import { z } from "zod";
 import { CartContext } from "../../contexts/CartContext/CartContext";
 import { useAuth } from "../../contexts/AuthContext/AuthContext";
 import { formatCurrency } from "../../utils/format-currency";
+import { formatCellphone } from "../../utils/format-validator";
 import Logo from "../../assets/images/logo.png";
 
 const API_BASE_URL = "http://localhost:3000";
+
+const SHIPPING_BY_REGION: Record<string, number> = {
+	Norte: 39.9,
+	Nordeste: 29.9,
+	"Centro-Oeste": 24.9,
+	Sudeste: 14.9,
+	Sul: 19.9,
+};
 
 const checkoutSchema = z.object({
 	cep: z.string().trim().min(1, "Informe o CEP").regex(/^\d{5}-?\d{3}$/, "Informe um CEP válido"),
@@ -23,6 +32,17 @@ const checkoutSchema = z.object({
 });
 
 type CheckoutFormData = z.infer<typeof checkoutSchema>;
+
+const checkoutDefaultValues: CheckoutFormData = {
+	cep: "",
+	street: "",
+	number: "",
+	complement: "",
+	neighborhood: "",
+	city: "",
+	state: "",
+	paymentMethod: "PIX",
+};
 
 const inputClassName = (hasError: boolean) =>
 	`mt-2 w-full rounded-md border bg-white px-4 py-3.5 text-base text-text outline-none transition focus:border-black focus:ring-2 focus:ring-black/10 ${
@@ -59,54 +79,115 @@ export const Route = createFileRoute("/checkout/")({
 function CheckoutPage() {
 	const navigate = useNavigate();
 	const { cart, removeFromCart } = useContext(CartContext);
-	const { isAuthenticated, user } = useAuth();
+	const { isAuthenticated, updatePhone, user } = useAuth();
 	const [addressMessage, setAddressMessage] = useState<string | null>(null);
 	const [isLoadingAddress, setIsLoadingAddress] = useState(false);
 	const [submitError, setSubmitError] = useState<string | null>(null);
 	const [isCompleted, setIsCompleted] = useState(false);
+	const [shippingCost, setShippingCost] = useState<number | null>(null);
+	const [isEditingPhone, setIsEditingPhone] = useState(false);
+	const [contactPhone, setContactPhone] = useState(user?.phone ?? "");
+	const [isSavingPhone, setIsSavingPhone] = useState(false);
+	const [phoneError, setPhoneError] = useState<string | null>(null);
 
 	const {
 		register,
 		setValue,
+		reset,
+		watch,
 		handleSubmit,
 		formState: { errors, isSubmitting },
 	} = useForm<CheckoutFormData>({
 		resolver: zodResolver(checkoutSchema),
 		mode: "onBlur",
-		defaultValues: { paymentMethod: "PIX" },
+		defaultValues: checkoutDefaultValues,
 	});
 
+	const cepValue = watch("cep");
+
 	const subtotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
-	const shipping = 0;
+	const shipping = shippingCost ?? 0;
 	const total = subtotal + shipping;
 	const customerName = [user?.firstName, user?.lastName].filter(Boolean).join(" ") || "Cliente";
-	const customerPhone = user?.phone || "Telefone não informado";
+	const customerPhone = contactPhone ? formatCellphone(contactPhone) : "Telefone não informado";
 
-	const findAddress = async () => {
-		const cep = document.querySelector<HTMLInputElement>("[name='cep']")?.value.replace(/\D/g, "") ?? "";
+	useEffect(() => {
+		setContactPhone(user?.phone ?? "");
+		setIsEditingPhone(false);
+		setPhoneError(null);
+	}, [user?.phone]);
+
+	const handleEditPhone = async () => {
+		if (!isAuthenticated) {
+			await navigate({ to: "/sign-in" });
+			return;
+		}
+
+		if (!isEditingPhone) {
+			setPhoneError(null);
+			setIsEditingPhone(true);
+			return;
+		}
+
+		const phone = contactPhone.replace(/\D/g, "");
+		if (!/^\d{10,11}$/.test(phone)) {
+			setPhoneError("Informe um telefone válido com DDD.");
+			return;
+		}
+
+		setIsSavingPhone(true);
+		setPhoneError(null);
+		try {
+			await updatePhone(phone);
+			setContactPhone(phone);
+			setIsEditingPhone(false);
+		} catch (error) {
+			setPhoneError(error instanceof Error ? error.message : "Não foi possível salvar o telefone.");
+		} finally {
+			setIsSavingPhone(false);
+		}
+	};
+
+	const findAddress = useCallback(async () => {
+		const cep = cepValue?.replace(/\D/g, "") ?? "";
 		if (!/^\d{8}$/.test(cep)) {
+			setShippingCost(null);
 			setAddressMessage("Digite um CEP válido para buscar o endereço.");
 			return;
 		}
 
 		setIsLoadingAddress(true);
 		setAddressMessage(null);
+		setShippingCost(null);
 		try {
 			const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-			const address = await response.json();
-			if (!response.ok || address.erro) throw new Error("CEP não encontrado.");
+			const data = await response.json();
+			if (!response.ok || data.erro) throw new Error("CEP não encontrado.");
 
-			setValue("street", address.logradouro ?? "", { shouldValidate: true });
-			setValue("neighborhood", address.bairro ?? "", { shouldValidate: true });
-			setValue("city", address.localidade ?? "", { shouldValidate: true });
-			setValue("state", address.uf ?? "", { shouldValidate: true });
+			const cost = SHIPPING_BY_REGION[data.regiao];
+			if (cost === undefined) throw new Error("Região não suportada para entrega.");
+
+			setValue("street", data.logradouro ?? "", { shouldValidate: true });
+			setValue("neighborhood", data.bairro ?? "", { shouldValidate: true });
+			setValue("city", data.localidade ?? "", { shouldValidate: true });
+			setValue("state", data.uf ?? "", { shouldValidate: true });
+			setShippingCost(cost);
 			setAddressMessage("Endereço encontrado. Confira os dados antes de continuar.");
 		} catch (error) {
 			setAddressMessage(error instanceof Error ? error.message : "Não foi possível buscar o CEP.");
 		} finally {
 			setIsLoadingAddress(false);
 		}
-	};
+	}, [cepValue, setValue]);
+
+	useEffect(() => {
+		if (cepValue.replace(/\D/g, "").length !== 8) {
+			setShippingCost(null);
+			return;
+		}
+
+		void findAddress();
+	}, [cepValue, findAddress]);
 
 	const onSubmit = async (data: CheckoutFormData) => {
 		if (!isAuthenticated) {
@@ -183,26 +264,64 @@ function CheckoutPage() {
 	return (
 		<div className="min-h-screen bg-[#eeece7] text-[#222]">
 			<CheckoutHeader />
-			<main className="mx-auto grid max-w-[1280px] gap-12 px-8 py-8 md:grid-cols-[minmax(0,1fr)_320px] md:gap-16">
+			<main className="mx-auto grid max-w-7xl gap-12 px-8 py-8 md:grid-cols-[minmax(0,1fr)_320px] md:gap-16">
 				<form id="checkout-form" onSubmit={handleSubmit(onSubmit)} noValidate className="min-w-0">
-					<section className="rounded bg-white p-6 shadow-sm md:max-w-[760px]">
+					<section className="rounded bg-white p-6 shadow-sm md:max-w-190">
 						<h1 className="text-xl font-medium">Identificação</h1>
 						<p className="mt-2 text-sm text-[#aaa]">{user?.email}</p>
 						<p className="text-sm text-[#aaa]">{customerName}</p>
-						<div className="mt-3 rounded bg-[#f4f4f6] px-4 py-3 text-sm">
-							<p className="flex items-center gap-2"><FiAlertCircle className="shrink-0 text-[#222]" size={18} aria-hidden="true" /> Antes de continuar, verifique se o telefone para contato está correto.</p>
-							<strong className="ml-5">{customerPhone}</strong>
+						<div className="mt-3 rounded-md bg-[#f4f4f6] px-4 py-3 text-sm">
+							<p className="flex items-center gap-2 text-[#222]"><FiAlertCircle className="shrink-0" size={18} aria-hidden="true" /> Antes de continuar, verifique se o telefone para contato está correto.</p>
+							{isEditingPhone ? (
+								<div className="ml-6 mt-3 max-w-xs">
+									<label htmlFor="contact-phone" className="text-xs font-medium text-[#596274]">Telefone para contato</label>
+									<input
+										id="contact-phone"
+										type="tel"
+										value={formatCellphone(contactPhone)}
+										onChange={(event) => setContactPhone(event.target.value.replace(/\D/g, "").slice(0, 11))}
+										placeholder="(00) 00000-0000"
+										inputMode="tel"
+										className="mt-1 w-full rounded-md border border-[#c9cbd1] bg-white px-3 py-2 font-medium text-[#222] outline-none transition focus:border-black focus:ring-2 focus:ring-black/10"
+										autoFocus
+									/>
+									<p className="mt-1 text-xs text-[#777]">Usaremos este número para falar sobre o pedido.</p>
+								</div>
+							) : (
+								<strong className="ml-6 mt-2 block text-base">{customerPhone}</strong>
+							)}
+							{phoneError && <p className="ml-6 mt-2 text-xs text-error">{phoneError}</p>}
 						</div>
-						<button type="button" className="mt-3 text-sm text-[#4391df] underline">editar telefone</button>
+						<button
+							type="button"
+							onClick={handleEditPhone}
+							disabled={isSavingPhone}
+							className="mt-3 cursor-pointer text-sm text-[#4391df] underline disabled:cursor-not-allowed disabled:opacity-60"
+						>
+							{isSavingPhone ? "Salvando..." : isEditingPhone ? "Salvar telefone" : "Editar telefone"}
+						</button>
 					</section>
 
-					<section className="mt-8 md:max-w-[760px]">
-						<h2 className="text-lg font-medium">Informe seu endereço</h2>
+					<section className="mt-8 md:max-w-190">
+						<div className="flex items-center justify-between gap-4">
+							<h2 className="text-lg font-medium">Informe seu endereço</h2>
+							<button
+								type="button"
+								onClick={() => {
+									reset();
+									setAddressMessage(null);
+									setShippingCost(null);
+								}}
+								className="cursor-pointer text-sm text-[#4391df] underline"
+							>
+								Limpar formulário
+							</button>
+						</div>
 						<div className="mt-4 grid grid-cols-[1fr_auto] gap-2">
 							<input {...register("cep")} placeholder="zipCode" inputMode="numeric" className={inputClassName(Boolean(errors.cep))} />
-							<button type="button" onClick={findAddress} disabled={isLoadingAddress} className="rounded bg-black px-6 text-sm text-white disabled:opacity-50">{isLoadingAddress ? "Buscando" : "Buscar"}</button>
+							<button type="button" onClick={findAddress} disabled={isLoadingAddress} className="mt-2 h-13.5 cursor-pointer self-start rounded bg-black px-6 text-sm text-white disabled:cursor-not-allowed disabled:opacity-50">{isLoadingAddress ? "Buscando" : "Buscar"}</button>
 						</div>
-						{errors.cep && <p className="mt-1 text-xs text-error">{errors.cep.message}</p>}
+						{errors.cep && <p className="mt-1 text-sm text-error">{errors.cep.message}</p>}
 						<label className="mt-4 block text-sm">Endereço<input {...register("street")} placeholder="street" className={inputClassName(Boolean(errors.street))} />{errors.street && <span className="text-error">{errors.street.message}</span>}</label>
 						<div className="mt-4 grid gap-4 md:grid-cols-2">
 							<label className="block text-sm">Número<input {...register("number")} placeholder="number" className={inputClassName(Boolean(errors.number))} />{errors.number && <span className="text-error">{errors.number.message}</span>}</label>
@@ -216,12 +335,12 @@ function CheckoutPage() {
 						{addressMessage && <p className="mt-2 text-xs text-[#777]">{addressMessage}</p>}
 					</section>
 
-					<section className="mt-8 md:max-w-[760px]">
+					<section className="mt-8 md:max-w-190">
 						<h2 className="text-lg font-medium">Escolha a forma de entrega</h2>
 						<label className="mt-5 flex items-start gap-3 text-sm">
 							<input type="radio" defaultChecked name="delivery" className="mt-0.5 accent-black" />
 							<span><strong>Entrega rápida</strong><small className="block text-[#8b8b8b]">Receba em até 5 dias úteis</small></span>
-							<span className="ml-auto">R$ 0,00</span>
+							<span className="ml-auto">{shippingCost === null ? "A calcular" : formatCurrency(shippingCost)}</span>
 						</label>
 					</section>
 				</form>
@@ -238,11 +357,11 @@ function CheckoutPage() {
 					</div>
 					<div className="mt-44 space-y-2 text-sm">
 						<div className="flex justify-between"><span>Subtotal</span><span>{formatCurrency(subtotal)}</span></div>
-						<div className="flex justify-between"><span>Frete</span><span>A calcular</span></div>
+						<div className="flex justify-between"><span>Frete</span><span>{shippingCost === null ? "A calcular" : formatCurrency(shippingCost)}</span></div>
 						<div className="flex justify-between"><strong>Total</strong><strong>{formatCurrency(total)} à vista</strong></div>
 					</div>
 					{submitError && <p className="mt-3 rounded bg-red-50 p-2 text-xs text-error">{submitError}</p>}
-					<button type="submit" form="checkout-form" disabled={isSubmitting} className="mt-5 w-full rounded bg-black py-3 text-sm text-white disabled:opacity-50">{isSubmitting ? "Processando..." : "Fechar pedido"}</button>
+					<button type="submit" form="checkout-form" disabled={isSubmitting} className="mt-5 w-full cursor-pointer rounded bg-black py-3 text-sm text-white disabled:cursor-not-allowed disabled:opacity-50">{isSubmitting ? "Processando..." : "Fechar pedido"}</button>
 				</aside>
 			</main>
 			<CheckoutFooter />
