@@ -1,6 +1,6 @@
 import type { Product } from "../interfaces/product";
+import { API_BASE_URL } from "./api";
 
-const API_BASE_URL = "http://localhost:3000";
 // Limite padrão compatível com a API (máximo 50)
 const DEFAULT_LIMIT = 3;
 

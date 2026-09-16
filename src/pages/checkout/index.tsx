@@ -9,8 +9,7 @@ import { useAuth } from "../../contexts/AuthContext/AuthContext";
 import { formatCurrency } from "../../utils/format-currency";
 import { formatCellphone } from "../../utils/format-validator";
 import Logo from "../../assets/images/logo.png";
-
-const API_BASE_URL = "http://localhost:3000";
+import { API_BASE_URL } from "../../services/api";
 
 const SHIPPING_BY_REGION: Record<string, number> = {
 	Norte: 39.9,

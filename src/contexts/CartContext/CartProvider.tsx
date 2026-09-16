@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { Product } from "../../interfaces/product";
 import { CartContext } from "./CartContext";
 import { useAuth } from "../AuthContext/AuthContext";
+import { API_BASE_URL } from "../../services/api";
 
 interface CartProviderProps {
     children: React.ReactNode;
@@ -13,7 +14,7 @@ export interface ProductCart extends Product {
 
 export const localStorageKey = "@SyntaxWear:cart";
 
-const CART_API_URL = "http://localhost:3000/cart";
+const CART_API_URL = `${API_BASE_URL}/cart`;
 
 interface ApiCartItem {
     product: Product;

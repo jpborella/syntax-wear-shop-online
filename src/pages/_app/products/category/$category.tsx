@@ -36,8 +36,6 @@ function RouteComponent() {
     const { category: routeCategory } = Route.useParams();
     const search: any = Route.useSearch();
 
-    const hasFetchedInitialProducts = useRef<string | null>(null);
-    const searchGenderRef = useRef<string | null>(null);
     const fetchKeyRef = useRef<string | null>(null);
     const isLoadingRef = useRef(false);
 
