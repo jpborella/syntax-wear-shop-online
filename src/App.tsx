@@ -3,6 +3,7 @@ import { routeTree } from "./router-tree-gen"
 import { CartProvider } from "./contexts/CartContext/CartProvider";
 import { AuthProvider } from "./contexts/AuthContext/AuthProvider";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { env } from "./config/env";
 
 // Cria a instância principal do roteador usando a árvore de rotas gerada automaticamente.
 const router = createRouter({ routeTree });
@@ -20,7 +21,7 @@ function App() {
   // Injeta o roteador na aplicação React; a partir daqui as rotas passam a controlar
   // qual página/componente será renderizada de acordo com a URL atual.
   return (
-    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+    <GoogleOAuthProvider clientId={env.GOOGLE_CLIENT_ID}>
       <AuthProvider>
         <CartProvider>
           <RouterProvider router={router} />
