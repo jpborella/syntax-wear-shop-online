@@ -112,8 +112,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
         const result = await response.json();
 
-        console.log("result:", result);
-
         if (!response.ok || !result.user) {
             throw new Error(result.message || "Erro ao fazer login com Google");
         }

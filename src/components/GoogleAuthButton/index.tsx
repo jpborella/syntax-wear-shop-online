@@ -11,7 +11,6 @@ export const GoogleAuthButton = () => {
 
     const handleGoogleSuccess = async (credentialResponse: CredentialResponse): Promise<void> => {
         const credential = credentialResponse.credential;
-        console.log("Google Token:", credential);
 
         if (!credential) {
             setGoogleError("Erro ao autenticar com Google. Por favor, tente novamente.");
