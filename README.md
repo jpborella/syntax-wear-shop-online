@@ -1,147 +1,202 @@
-# Syntax Wear Shop Online
+# Syntax Wear
 
-Frontend de uma loja virtual fictícia de calçados, desenvolvido com React, TypeScript e Vite. O projeto entrega uma experiência de catálogo com navegação por rotas, páginas institucionais, fluxo visual de autenticação, carrinho persistido no navegador e cálculo de frete por CEP.
+Aplicação de e-commerce focada em calçados, com frontend em React e backend em Node.js + Fastify + Prisma. O projeto foi estruturado para refletir uma loja real, com autenticação, catálogo, carrinho, pedidos e integração com banco PostgreSQL hospedado em Supabase.
 
 ## Visão geral
 
-O projeto simula a interface de um e-commerce de calçados com foco em:
+A proposta do projeto é demonstrar um e-commerce funcional com foco em:
 
-- catálogo de produtos com dados mockados
-- páginas públicas e institucionais
-- navegação com rotas file-based
-- formulário de cadastro com validação
-- carrinho lateral com persistência em `localStorage`
-- cálculo de entrega com consulta ao ViaCEP
+- catálogo de produtos com filtros;
+- autenticação com JWT + cookies;
+- login com Google;
+- cadastro de usuários;
+- carrinho e checkout;
+- pedidos com controle de estoque;
+- API REST com documentação e validações;
+- arquitetura separada entre frontend e backend.
 
-## Principais funcionalidades
+## Stack principal
 
-- Home com banner principal, categorias em destaque e galeria visual.
-- Listagem de produtos a partir de mocks locais.
-- Página de detalhes do produto com preço, desconto no PIX, parcelamento e botão para adicionar ao carrinho.
-- Filtro de catálogo por categoria via rota dinâmica.
-- Carrinho lateral com incremento, decremento, remoção de itens e persistência no navegador.
-- Página de cadastro com `react-hook-form` e validação com `zod`.
-- Máscaras e validações de CPF e celular.
-- Cálculo de frete por CEP usando a API pública do ViaCEP e uma tabela local de custo por região.
-- Páginas institucionais como "Sobre" e "Nossas lojas".
-- Telas de login e cadastro com interface pronta para futura integração com backend/autenticação real.
-
-## Stack utilizada
-
+### Frontend
 - React 19
 - TypeScript
-- Vite 7
+- Vite
 - TanStack Router
-- Tailwind CSS v4
+- Tailwind CSS
 - React Hook Form
 - Zod
-- React Icons
 
-## Estrutura do projeto
+### Backend
+- Node.js
+- Fastify
+- TypeScript
+- Prisma ORM
+- PostgreSQL
+- JWT
+- Google Auth Library
+
+## Estrutura do repositório
 
 ```text
-.
-|-- public/
-|-- scripts/
-|-- src/
-|   |-- assets/         # Imagens e fontes
-|   |-- components/     # Componentes reutilizáveis da interface
-|   |-- contexts/       # Contexto global do carrinho
-|   |-- interfaces/     # Tipagens da aplicação
-|   |-- mocks/          # Dados estáticos de produtos e categorias
-|   |-- pages/          # Rotas file-based do TanStack Router
-|   |-- styles/         # Estilos globais e tokens do tema
-|   |-- utils/          # Formatação e validações auxiliares
-|   |-- App.tsx
-|   |-- main.tsx
-|   `-- router-tree-gen.ts
-|-- index.html
-|-- vite.config.ts
-`-- package.json
+Syntax Wear/
+├── syntax-wear-api/
+│   ├── prisma/
+│   ├── src/
+│   ├── tests/
+│   ├── docs/
+│   ├── package.json
+│   ├── tsconfig.json
+│   └── ...
+├── syntax-wear-shop-online/
+│   ├── src/
+│   ├── public/
+│   ├── package.json
+│   ├── vite.config.ts
+│   └── ...
+├── problema-render-produtos-producao.md
+└── README.md (opcional, se você quiser manter um resumo geral no raiz)
 ```
 
-## Rotas principais
+## Como executar localmente
 
-| Rota | Descrição |
-| --- | --- |
-| `/` | Página inicial com hero, categorias e galeria |
-| `/products` | Listagem completa de produtos |
-| `/products/$productId` | Detalhes de um produto específico |
-| `/products/category/$category` | Produtos filtrados por categoria |
-| `/about` | Página institucional sobre a marca |
-| `/our-stores` | Página institucional das lojas físicas |
-| `/sign-in` | Tela de login |
-| `/sign-up` | Tela de cadastro |
+### 1) Backend
 
-## Como executar o projeto
+Entre na pasta do backend:
 
-### Pré-requisitos
+```bash
+cd syntax-wear-api
+```
 
-- Node.js em versão LTS
-- npm
-
-### Instalação
+Instale as dependências:
 
 ```bash
 npm install
 ```
 
-### Ambiente de desenvolvimento
+Crie o arquivo `.env` com as variáveis necessárias, por exemplo:
+
+```env
+DATABASE_URL="postgresql://..."
+JWT_SECRET="sua_chave_secreta"
+GOOGLE_CLIENT_ID="seu_client_id"
+NODE_ENV="development"
+PORT=4000
+HOST=0.0.0.0
+```
+
+Inicie o servidor em desenvolvimento:
 
 ```bash
 npm run dev
 ```
 
-O Vite exibirá no terminal a URL local da aplicação, normalmente `http://localhost:5173`.
-
-### Build de produção
+Build de produção:
 
 ```bash
 npm run build
 ```
 
-### Preview da build
+Execução em produção:
 
 ```bash
+npm run start
+```
+
+Testes:
+
+```bash
+npm run test:run
+```
+
+### 2) Frontend
+
+Entre na pasta do frontend:
+
+```bash
+cd syntax-wear-shop-online
+```
+
+Instale as dependências:
+
+```bash
+npm install
+```
+
+Configure o arquivo `.env`:
+
+```env
+VITE_API_URL="http://localhost:4000"
+VITE_GOOGLE_CLIENT_ID="seu_client_id"
+```
+
+Inicie o app localmente:
+
+```bash
+npm run dev
+```
+
+Build de produção:
+
+```bash
+npm run build
+```
+
+## Fluxo principal da aplicação
+
+- O frontend renderiza catálogo, filtros, carrinho e autenticidade.
+- O backend expõe rotas de produtos, usuários, categorias, autenticação e pedidos.
+- O Prisma conecta o app ao PostgreSQL.
+- Os cookies HTTP-only e o JWT controlam o acesso do usuário.
+- A API valida dados com Zod e retorna respostas padronizadas.
+
+## Funcionalidades atuais
+
+- catálogo de produtos e categorias;
+- página de detalhes do produto;
+- filtros por categoria e gênero;
+- carrinho de compras;
+- login e cadastro de usuários;
+- autenticação com Google;
+- criação e consulta de pedidos;
+- controle de estoque em transação;
+- proteção de rotas e validação de erros.
+
+## Status do projeto
+
+O projeto está em uma fase de revisão e estabilização para apresentação. O foco principal foi:
+
+- corrigir problemas de produção e infraestrutura;
+- ajustar autenticação e cookies em domínios diferentes;
+- validar variáveis de ambiente;
+- proteger a API contra erros e logs sensíveis;
+- revisar a transação de estoque e o checkout real;
+- organizar a documentação da etapa de checkup.
+
+## Limitações e observações
+
+- O front e o back são projetos independentes, e devem ser executados separadamente.
+- A integração com Stripe foi adiada para uma etapa posterior.
+- Ainda é importante revisar documentação, testes e mensagens finais antes da apresentação.
+- O ambiente de produção depende das variáveis corretas do Render/Supabase e do Vercel.
+
+## Scripts úteis
+
+### Backend
+
+```bash
+npm run dev
+npm run build
+npm run test:run
+npm run prisma:generate
+npm run prisma:migrate
+```
+
+### Frontend
+
+```bash
+npm run dev
+npm run build
+npm run lint
 npm run preview
 ```
 
-### Lint
-
-```bash
-npm run lint
-```
-
-## Detalhes técnicos relevantes
-
-- As rotas são definidas em `src/pages` e a árvore é gerada automaticamente em `src/router-tree-gen.ts` pelo plugin do TanStack Router.
-- O alias `@` aponta para `src`, configurado em `vite.config.ts`.
-- O carrinho é gerenciado por contexto React e persistido em `localStorage` na chave `@SyntaxWear:cart`.
-- O catálogo usa dados estáticos em `src/mocks/productsInfo.ts`.
-- O cálculo de frete depende de consulta à API pública `https://viacep.com.br/ws/{cep}/json/`.
-- O tema global, cores e fontes estão centralizados em `src/styles/globals.css`.
-
-## Limitações atuais
-
-- Não existe backend integrado para autenticação, pedidos ou checkout.
-- O botão de login com Google é apenas visual neste momento.
-- Os produtos e categorias vêm de mocks locais, sem API real.
-- O cálculo de frete depende de conexão com internet e da disponibilidade do ViaCEP.
-- O botão "Fechar pedido" no carrinho ainda não conclui uma compra.
-
-## Scripts disponíveis
-
-| Comando | Função |
-| --- | --- |
-| `npm run dev` | Inicia o servidor de desenvolvimento |
-| `npm run build` | Gera a build de produção |
-| `npm run preview` | Serve localmente a build gerada |
-| `npm run lint` | Executa a análise estática com ESLint |
-
-## Possíveis próximos passos
-
-- Integrar catálogo e autenticação com API real.
-- Implementar fluxo completo de checkout.
-- Adicionar testes automatizados.
-- Persistir usuários e pedidos.
-- Melhorar estados de loading, erro e feedback visual em operações assíncronas.
