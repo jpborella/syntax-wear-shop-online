@@ -31,9 +31,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                 const data = await response.json();
                 setUser(data.user);
                 setIsAuthenticated(true);
-
-                console.log(data.user);
-
             } catch (error) {
                 console.error("Erro ao buscar perfil do usuário:", error);
                 setUser(null);
