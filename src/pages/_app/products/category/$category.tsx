@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ProductList } from "../../../../components/ProductList";
 import { getProductByCategoryId, getProductBySection } from "../../../../services/productService";
 import { getCategoryByName } from "../../../../services/categoryService";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { Product } from "../../../../interfaces/product";
 import { z } from "zod";
 
@@ -20,7 +20,7 @@ export const Route = createFileRoute("/_app/products/category/$category")({
         try {
             const category = await getCategoryByName(params.category);
             return { category, section: null };
-        } catch (e) {
+        } catch {
             return { category: null, section: null, notFound: true };
         }
     },
@@ -32,72 +32,87 @@ export const Route = createFileRoute("/_app/products/category/$category")({
 
 function RouteComponent() {
     const [products, setProducts] = useState<Product[]>([]);
-    const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
 
     const { category, section, notFound } = Route.useLoaderData();
     const { category: routeCategory } = Route.useParams();
     const search = Route.useSearch();
+    const categoryId = category?.id;
 
     const fetchKeyRef = useRef<string | null>(null);
     const isLoadingRef = useRef(false);
+    const hasMoreRef = useRef(true);
+    const pageRef = useRef(1);
+    const requestIdRef = useRef(0);
 
-    useEffect(() => {
-        const key = `${routeCategory ?? ''}|${search.gender ?? ''}|${section ?? ''}`;
-        if (fetchKeyRef.current === key) return;
-        fetchKeyRef.current = key;
+    const loadMore = useCallback(async (pageToLoad?: number, reset = false) => {
+        if ((!reset && (isLoadingRef.current || !hasMoreRef.current)) || notFound) return;
 
-        setProducts([]);
-        setPage(1);
-        setHasMore(true);
-        loadMore(1);
-    }, [routeCategory, category, section, notFound, search.gender]);
-
-    async function loadMore(pageToLoad?: number) {
-        if (isLoadingRef.current || !hasMore || notFound) return;
-
+        const requestId = reset ? ++requestIdRef.current : requestIdRef.current;
         isLoadingRef.current = true;
         setLoading(true);
-        const currentPage = pageToLoad ?? page;
+        const currentPage = pageToLoad ?? pageRef.current;
 
         try {
             let filteredProducts;
-            
+
             if (section) {
                 filteredProducts = await getProductBySection(section, { page: currentPage, gender: search.gender });
-            } else if (category) {
-                filteredProducts = await getProductByCategoryId(category.id, { page: currentPage, gender: search.gender });
+            } else if (categoryId) {
+                filteredProducts = await getProductByCategoryId(categoryId, { page: currentPage, gender: search.gender });
             } else {
+                hasMoreRef.current = false;
                 setHasMore(false);
                 return;
             }
 
-            setProducts((prev) => {
-                const combined = [...prev, ...filteredProducts.data];
+            if (requestId !== requestIdRef.current) return;
 
-                // Unificar por id para evitar duplicados
-                const map = new Map<number, typeof combined[0]>();
-                for (const p of combined) {
-                    map.set(p.id, p);
+            setProducts((prev) => {
+                if (reset) return filteredProducts.data;
+
+                const combined = [...prev, ...filteredProducts.data];
+                const map = new Map<number, typeof combined[number]>();
+                for (const product of combined) {
+                    map.set(product.id, product);
                 }
 
                 return Array.from(map.values());
             });
 
             if (filteredProducts.data.length < filteredProducts.limit) {
+                hasMoreRef.current = false;
                 setHasMore(false);
             } else {
-                setPage((prev) => prev + 1);
+                pageRef.current = currentPage + 1;
             }
         } catch (error) {
+            if (requestId !== requestIdRef.current) return;
+
             console.error("Erro ao carregar produtos:", error);
+            hasMoreRef.current = false;
             setHasMore(false);
         } finally {
-            isLoadingRef.current = false;
-            setLoading(false);
+            if (requestId === requestIdRef.current) {
+                isLoadingRef.current = false;
+                setLoading(false);
+            }
         }
-    }
+    }, [categoryId, notFound, search.gender, section]);
+
+    useEffect(() => {
+        const key = `${routeCategory ?? ''}|${categoryId ?? ''}|${search.gender ?? ''}|${section ?? ''}|${notFound ?? false}`;
+        if (fetchKeyRef.current === key) return;
+        fetchKeyRef.current = key;
+
+        setProducts([]);
+        pageRef.current = 1;
+        requestIdRef.current += 1;
+        setHasMore(true);
+        hasMoreRef.current = true;
+        void loadMore(1, true);
+    }, [categoryId, loadMore, notFound, routeCategory, search.gender, section]);
 
     if (notFound) {
         return (
