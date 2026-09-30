@@ -4,8 +4,12 @@ import { getProductByCategoryId, getProductBySection } from "../../../../service
 import { getCategoryByName } from "../../../../services/categoryService";
 import { useEffect, useRef, useState } from "react";
 import type { Product } from "../../../../interfaces/product";
+import { z } from "zod";
 
 export const Route = createFileRoute("/_app/products/category/$category")({
+    validateSearch: z.object({
+        gender: z.enum(["MASCULINO", "FEMININO", "UNISSEX"]).optional(),
+    }),
     loader: async ({ params }) => {
         const isSection = ['masculino', 'feminino', 'outlet'].includes(params.category.toLowerCase());
         
@@ -34,7 +38,7 @@ function RouteComponent() {
 
     const { category, section, notFound } = Route.useLoaderData();
     const { category: routeCategory } = Route.useParams();
-    const search: any = Route.useSearch();
+    const search = Route.useSearch();
 
     const fetchKeyRef = useRef<string | null>(null);
     const isLoadingRef = useRef(false);
