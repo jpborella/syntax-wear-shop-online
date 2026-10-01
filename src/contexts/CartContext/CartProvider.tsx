@@ -3,13 +3,10 @@ import type { Product } from "../../interfaces/product";
 import { CartContext } from "./CartContext";
 import { useAuth } from "../AuthContext/AuthContext";
 import { API_BASE_URL } from "../../services/api";
+import { mergeCartItems, type ProductCart } from "./cartUtils";
 
 interface CartProviderProps {
     children: React.ReactNode;
-}
-
-export interface ProductCart extends Product {
-    quantity: number;
 }
 
 export const localStorageKey = "@SyntaxWear:cart";
@@ -64,20 +61,27 @@ export const CartProvider = ({ children }: CartProviderProps) => {
 
         let cancelled = false;
         const loadAccountCart = async () => {
+            const guestCart = readGuestCart();
             const response = await fetch(CART_API_URL, { credentials: "include" });
             if (!response.ok) throw new Error("Não foi possível carregar o carrinho.");
 
             const data = (await response.json()) as ApiCartResponse;
+            const accountCart = data.items.map(toProductCart);
+            const mergedCart = mergeCartItems(guestCart, accountCart);
 
             if (!cancelled) {
-                setCart(data.items.map(toProductCart));
+                setCart(mergedCart);
                 setLoadedCartUserId(currentUserId);
+
+                if (guestCart.length > 0) {
+                    localStorage.removeItem(localStorageKey);
+                }
             }
         };
 
         void loadAccountCart().catch(() => {
             if (!cancelled) {
-                setCart([]);
+                setCart(readGuestCart());
                 setLoadedCartUserId(currentUserId);
             }
         });

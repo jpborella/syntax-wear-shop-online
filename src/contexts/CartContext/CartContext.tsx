@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import type { ProductCart } from "../CartContext/CartProvider";
+import type { ProductCart } from "./cartUtils";
 import type { Product } from "../../interfaces/product";
 
 export interface CartContextType {
