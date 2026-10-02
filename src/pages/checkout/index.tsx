@@ -9,6 +9,7 @@ import { useAuth } from "../../contexts/AuthContext/AuthContext";
 import { formatCurrency } from "../../utils/format-currency";
 import { formatCellphone } from "../../utils/format-validator";
 import Logo from "../../assets/images/logo.png";
+import LockIcon from "../../assets/images/lock-icon.png";
 import { API_BASE_URL } from "../../services/api";
 
 const SHIPPING_BY_REGION: Record<string, number> = {
@@ -54,7 +55,7 @@ const CheckoutHeader = () => (
 			<img src={Logo} alt="SyntaxWear" className="h-auto w-32" />
 		</Link>
 		<div className="flex items-center gap-2 text-sm font-medium text-[#333333]">
-			<img src="/images/lock-icon.png" alt="" aria-hidden="true" className="h-5 w-5 object-contain" />
+			<img src={LockIcon} alt="" aria-hidden="true" className="h-5 w-5 object-contain" />
 			<span>100% seguro</span>
 		</div>
 	</header>
